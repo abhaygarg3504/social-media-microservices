@@ -7,7 +7,7 @@ A scalable, microservices-based social media platform built with Node.js, Expres
 - **User Authentication & Identity Management**: Secure user registration, login, and token-based authentication using JWT.
 - **Post Management**: Create, read, update, and delete posts with rich content support.
 - **Media Handling**: Upload and manage images/videos using Cloudinary integration.
-- **Search Functionality**: Real-time search across posts and users with Elasticsearch-like capabilities.
+- **Search Functionality**: Real-time search across posts and users.
 - **Event-Driven Architecture**: Asynchronous communication between services using RabbitMQ.
 - **API Gateway**: Centralized entry point for all client requests with load balancing and routing.
 - **Database Management**: PostgreSQL databases for each service with Prisma ORM for type-safe queries.
