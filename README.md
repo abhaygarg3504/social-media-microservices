@@ -1,141 +1,179 @@
 # Social Media Microservices
 
-A scalable, microservices-based social media platform built with Node.js, Express, Prisma, RabbitMQ, and Docker. This project demonstrates modern software architecture principles, event-driven communication, and cloud-native development practices.
+A microservices-based social media platform built with Node.js, Express, Prisma, RabbitMQ, Redis, and Docker. This repository includes an API Gateway plus four backend services for identity, posts, media, and search.
 
 ## 🚀 Features
 
-- **User Authentication & Identity Management**: Secure user registration, login, and token-based authentication using JWT.
-- **Post Management**: Create, read, update, and delete posts with rich content support.
-- **Media Handling**: Upload and manage images/videos using Cloudinary integration.
-- **Search Functionality**: Real-time search across posts and users.
-- **Event-Driven Architecture**: Asynchronous communication between services using RabbitMQ.
-- **API Gateway**: Centralized entry point for all client requests with load balancing and routing.
-- **Database Management**: PostgreSQL databases for each service with Prisma ORM for type-safe queries.
-- **Containerization**: Fully dockerized services for easy deployment and scaling.
-- **Logging & Error Handling**: Comprehensive logging and error handling across all services.
+- **User Authentication**: Registration, login, logout, refresh token using JWT.
+- **Post Management**: Create, read, and delete posts with authorization.
+- **Media Uploads**: Upload media files using Cloudinary and secure file handling.
+- **Search**: Search posts through an event-driven search index.
+- **Event-Driven Architecture**: RabbitMQ publishes and consumes post events across services.
+- **API Gateway**: Central routing and authorization layer under `/v1/*`.
+- **Database Separation**: Each service uses its own PostgreSQL database.
+- **Containerized Deployment**: Docker Compose orchestrates all services and infrastructure.
 
 ## 🏗️ Architecture
 
-The application follows a microservices architecture with the following services:
+The repository contains the following services:
 
-- **API Gateway**: Routes requests to appropriate services, handles authentication middleware.
-- **Identity Service**: Manages user authentication, registration, and JWT token generation.
-- **Post Service**: Handles CRUD operations for posts, including content validation.
-- **Media Service**: Manages file uploads, processing, and storage via Cloudinary.
-- **Search Service**: Indexes posts and provides search functionality, listens to events for real-time updates.
+- `api-gateway/` - routes client requests, applies authentication, and proxies to downstream services.
+- `identity-service/` - handles registration, login, refresh token, and logout.
+- `post-service/` - manages post creation, retrieval, and deletion.
+- `media-service/` - handles authenticated media uploads and retrieval.
+- `search-service/` - provides post search and keeps indexes updated through RabbitMQ events.
 
-Services communicate asynchronously via RabbitMQ message broker and use PostgreSQL databases with Prisma ORM.
+Supporting infrastructure is defined in `docker-compose.yml`:
+
+- Redis
+- RabbitMQ
+- PostgreSQL databases for identity, post, media, and search services
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Node.js, Express.js
-- **Database**: PostgreSQL
+- **Backend**: Node.js, Express
 - **ORM**: Prisma
+- **Databases**: PostgreSQL
 - **Message Broker**: RabbitMQ
+- **Caching / Rate limiting**: Redis
 - **File Storage**: Cloudinary
 - **Containerization**: Docker, Docker Compose
-- **Authentication**: JWT (JSON Web Tokens)
-- **Validation**: Custom validation utilities
-- **Logging**: Winston logger
+- **Logging**: Winston
 
 ## 📋 Prerequisites
 
-Before running this application, make sure you have the following installed:
-
 - Docker and Docker Compose
-- Node.js (v16 or higher)
+- Node.js v16 or newer
 - npm or yarn
 - Git
 
-## 🚀 Installation & Setup
+## 🚀 Run the Full Stack with Docker
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/abhaygarg3504/social-media-microservices.git
-   cd social-media-microservices
-   ```
-
-2. **Environment Configuration:**
-   Create `.env` files for each service with necessary environment variables (database URLs, JWT secrets, Cloudinary credentials, RabbitMQ connection, etc.).
-
-3. **Build and run with Docker Compose:**
-   ```bash
-   docker-compose up --build
-   ```
-
-   This will start all services, databases, and RabbitMQ.
-
-4. **Database Migration:**
-   For each service with Prisma:
-   ```bash
-   cd <service-directory>
-   npx prisma migrate dev
-   npx prisma generate
-   ```
-
-## 📖 Usage
-
-Once all services are running:
-
-- API Gateway will be available at `http://localhost:3000`
-- Access individual services through the gateway
-- Use tools like Postman to test API endpoints
-
-### Example API Endpoints
-
-- `POST /auth/register` - User registration
-- `POST /auth/login` - User login
-- `GET /posts` - Fetch posts
-- `POST /posts` - Create a new post
-- `POST /media/upload` - Upload media files
-- `GET /search/posts?q=<query>` - Search posts
-
-## 🔧 Development
-
-### Running Individual Services
-
-For development, you can run services individually:
+From the repository root:
 
 ```bash
-cd <service-directory>
+docker-compose up --build
+```
+
+This starts the API gateway, identity service, post service, media service, search service, Redis, RabbitMQ, and four PostgreSQL databases.
+
+## 👩‍💻 Run Services Locally
+
+Each service can be started independently for development.
+
+```bash
+cd api-gateway
 npm install
 npm run dev
 ```
 
-### Testing
-
-Run tests for individual services:
-
 ```bash
-npm test
+cd identity-service
+npm install
+npm run dev
 ```
 
-### Database Management
+```bash
+cd post-service
+npm install
+npm run dev
+```
 
-- View database: `npx prisma studio`
-- Reset database: `npx prisma migrate reset`
+```bash
+cd media-service
+npm install
+npm run dev
+```
+
+```bash
+cd search-service
+npm install
+npm run dev
+```
+
+## 🧩 API Gateway Routes
+
+The API Gateway listens on `http://localhost:3000` and exposes the following endpoints:
+
+- `POST /v1/auth/register` - Register a new user
+- `POST /v1/auth/login` - Authenticate a user
+- `POST /v1/auth/refresh-token` - Refresh access token
+- `POST /v1/auth/logout` - Logout
+- `POST /v1/posts/create-post` - Create a post (authenticated)
+- `GET /v1/posts/all-posts` - Get all posts (authenticated)
+- `GET /v1/posts/post/:id` - Get a single post by ID (authenticated)
+- `DELETE /v1/posts/delete/:id` - Delete a post by ID (authenticated)
+- `POST /v1/media/upload` - Upload media (authenticated)
+- `GET /v1/media/get` - Get uploaded media for the authenticated user
+- `GET /v1/search/posts?q=<query>` - Search posts (authenticated)
+
+The gateway proxies requests to internal service paths under `/api/...`.
+
+## 🔧 Environment Variables
+
+Each service expects its own `.env` file. Common variables include:
+
+- `PORT`
+- `REDIS_URL`
+- `RABBITMQ_URL`
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `INDENTITY_SERVICE_URL`
+- `POST_SERVICE_URL`
+- `MEDIA_SERVICE_URL`
+- `SEARCH_SERVICE_URL`
+
+Media service also requires Cloudinary credentials:
+
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+
+## 🗂️ Service Ports
+
+Default ports used by the services:
+
+- API Gateway: `3000`
+- Identity Service: `3001`
+- Post Service: `3002`
+- Media Service: `3003`
+- Search Service: `3004`
+
+Infrastructure ports:
+
+- Redis: `6379`
+- RabbitMQ: `5672` and management UI on `15672`
+- identity-db: `5433`
+- post-db: `5434`
+- media-db: `5435`
+- search-db: `5436`
+
+## 📦 Database and Prisma
+
+For each service using Prisma, run migrations and generate the client:
+
+```bash
+cd <service-directory>
+npx prisma migrate dev
+npx prisma generate
+```
+
+## 💡 Notes
+
+- The API Gateway applies request authorization and rate limiting.
+- The Post, Media, and Search services use RabbitMQ for event-driven synchronization.
+- The Search service listens to `post.created` and `post.deleted` events to update search indexes.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+Contributions are welcome!
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit your changes: `git commit -m 'Add some AmazingFeature'`
+4. Push to your branch: `git push origin feature/AmazingFeature`
 5. Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👤 Author
-
-**Abhay Garg**
-- GitHub: [@abhaygarg3504](https://github.com/abhaygarg3504)
-- LinkedIn: [Your LinkedIn Profile]
-
-## 🙏 Acknowledgments
-
-- Inspired by modern microservices architectures
-- Thanks to the open-source community for the amazing tools and libraries used in this project
+MIT License. See [LICENSE](LICENSE) for details.
