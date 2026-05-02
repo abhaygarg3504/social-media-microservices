@@ -58,6 +58,9 @@ async function consumeEvent(routingKey, callback) {
     if (!channel) {
         await connectToRabbitMQ();
     }
+     if (!channel) {
+        throw new Error("RabbitMQ channel not initialized");
+    }
 
     const q = await channel.assertQueue("", { exclusive: true });
     await channel.bindQueue(q.queue, EXCHANGE_NAME, routingKey);

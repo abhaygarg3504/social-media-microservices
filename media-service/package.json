@@ -9,7 +9,7 @@
     "dev": "nodemon src/server.js"
   },
   "keywords": [],
-  "author": "Nitin Kumar",
+  "author": "Abhay Garg",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {

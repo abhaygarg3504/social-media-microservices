@@ -1,11 +1,11 @@
 const logger = require('../utils/logger');
-const prisam = require('../db/prisma');
+const prisma = require('../db/prisma');
 
 async function postCreatedEvent(event,redisClient) {
     const {postId,userId,content,createdAt} = event;
 
     try {
-        const search = await prisam.search.create({
+        const search = await prisma.search.create({
             data : {postId,userId,content,createdAt}
         })
 

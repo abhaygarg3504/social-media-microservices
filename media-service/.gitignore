@@ -1,3 +1,54 @@
-node_modules
-# Keep environment variables out of version control
+# Dependency directories
+node_modules/
+jspm_packages/
+web_hi_res_512.png
 
+# Environment variables and secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+*.pem
+*.key
+
+# Build and Distribution folders
+dist/
+build/
+out/
+.next/
+bin/
+obj/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+*.log
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Testing and Coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Databases and Temp files
+*.db
+*.sqlite
+.cache/
+.eslintcache

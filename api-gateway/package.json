@@ -12,7 +12,7 @@
     "backend",
     "api"
   ],
-  "author": "Nitin Kumar",
+  "author": "Abhay Garg",
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {

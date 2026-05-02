@@ -7,7 +7,7 @@
     "nodejs"
   ],
   "license": "MIT",
-  "author": "Nitin Kumar",
+  "author": "Abhay Garg",
   "type": "commonjs",
   "main": "src/server.js",
   "scripts": {
