@@ -1,6 +1,6 @@
 # Social Media Microservices
 
-A microservices-based social media platform built with Node.js, Express, Prisma, RabbitMQ, Redis, and Docker. This repository includes an API Gateway plus four backend services for identity, posts, media, and search.
+A microservices-based social media platform built with Node.js, Express.js, Prisma, PostgreSQL, RabbitMQ, Redis, and Docker. This repository includes an API Gateway plus four backend services for identity, posts, media, and search.
 
 ## 🚀 Features
 
@@ -42,12 +42,12 @@ Supporting infrastructure is defined in `docker-compose.yml`:
 
 ## 📋 Prerequisites
 
-- Docker and Docker Compose
+- Docker
 - Node.js v16 or newer
 - npm or yarn
 - Git
 
-## 🚀 Run the Full Stack with Docker
+## 🚀 Run with Docker
 
 From the repository root:
 
@@ -118,7 +118,7 @@ Each service expects its own `.env` file. Common variables include:
 - `RABBITMQ_URL`
 - `DATABASE_URL`
 - `JWT_SECRET`
-- `INDENTITY_SERVICE_URL`
+- `IDENTITY_SERVICE_URL`
 - `POST_SERVICE_URL`
 - `MEDIA_SERVICE_URL`
 - `SEARCH_SERVICE_URL`
@@ -173,7 +173,3 @@ Contributions are welcome!
 3. Commit your changes: `git commit -m 'Add some AmazingFeature'`
 4. Push to your branch: `git push origin feature/AmazingFeature`
 5. Open a Pull Request
-
-## 📄 License
-
-MIT License. See [LICENSE](LICENSE) for details.
