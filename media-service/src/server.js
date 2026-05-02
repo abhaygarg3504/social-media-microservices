@@ -70,20 +70,17 @@ app.use("/api/media",mediaRoutes);
 app.use(errorHandler);
 
 async function startServer() {
-    try {
-        await connectToRabbitMQ();
+  try {
+    await connectToRabbitMQ();
+    await consumeEvent("post.deleted", handlePostDeleted);
 
-        // consume event
-
-        await consumeEvent("post.deleted",handlePostDeleted);
-
-        app.listen(PORT, () => {
-            logger.info(`Media service is running on port ${PORT}`);
-        })
-    } catch (error) {
-        logger.error("Fail to connect to server", error);
-        process.exit(1)
-    }
+    app.listen(PORT, () => {
+      logger.info(`Media service is running on port ${PORT}`);
+    });
+  } catch (error) {
+    logger.error("Fail to connect to server", error);
+    process.exit(1);
+  }
 }
 
 startServer();
